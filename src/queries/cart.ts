@@ -2,17 +2,26 @@ import axios, { AxiosError } from "axios";
 import React from "react";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import API_PATHS from "~/constants/apiPaths";
+import { cart } from "~/mocks/data";
 import { CartItem } from "~/models/CartItem";
 
 export function useCart() {
-  return useQuery<CartItem[], AxiosError>("cart", async () => {
-    const res = await axios.get<CartItem[]>(`${API_PATHS.cart}/profile/cart`, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-      },
-    });
-    return res.data;
-  });
+  // return useQuery<CartItem[], AxiosError>("cart", async () => {
+  //   const res = await axios.get<CartItem[]>(`${API_PATHS.cart}/profile/cart`, {
+  //     headers: {
+  //       Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+  //     },
+  //   });
+  //   return res.data;
+  // });
+  const storage = localStorage.getItem('profile/cart');
+    return {
+      data: storage ? JSON.parse(storage) : [],
+      isFetching: false,
+    } as {
+      data: CartItem[],
+      isFetching: boolean,
+    }
 }
 
 export function useCartData() {
@@ -29,11 +38,18 @@ export function useInvalidateCart() {
 }
 
 export function useUpsertCart() {
-  return useMutation((values: CartItem) =>
-    axios.put<CartItem[]>(`${API_PATHS.cart}/profile/cart`, values, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-      },
-    })
+  return ((values: CartItem) =>
+  // return useMutation((values: CartItem) =>
+  //   axios.put<CartItem[]>(`${API_PATHS.cart}/profile/cart`, values, {
+  //     headers: {
+  //       Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+  //     },
+  //   })
+    {
+      const storage = localStorage.getItem('profile/cart');
+      const carts = storage ? JSON.parse(storage) : [];
+      carts.push(values);
+      localStorage.setItem('profile/cart', JSON.stringify(carts));
+    }
   );
 }

@@ -7,9 +7,20 @@ import PageProductImport from "~/components/pages/admin/PageProductImport/PagePr
 import PageCart from "~/components/pages/PageCart/PageCart";
 import PageProducts from "~/components/pages/PageProducts/PageProducts";
 import { Typography } from "@mui/material";
+import Context from "~/context/context";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [ msg, setMsg] = useState('');
+  if(!localStorage.getItem("authorization_token")) {
+    localStorage.setItem("authorization_token", btoa('Sambl4:TEST_PASSWORD'));
+  }
+  useEffect(() => {
+    msg && alert(msg);
+  }, [msg])
+
   return (
+    <Context.Provider value={{msg, setMsg}}>
     <MainLayout>
       <Routes>
         <Route path="/" element={<PageProducts />} />
@@ -29,6 +40,7 @@ function App() {
         />
       </Routes>
     </MainLayout>
+    </Context.Provider>
   );
 }
 

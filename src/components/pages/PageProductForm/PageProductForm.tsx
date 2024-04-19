@@ -23,14 +23,15 @@ export default function PageProductForm() {
   const { data, isLoading } = useAvailableProduct(id);
   const { mutateAsync: upsertAvailableProduct } = useUpsertAvailableProduct();
   const onSubmit = (values: AvailableProduct) => {
-    const formattedValues = AvailableProductSchema.cast(values);
-    const productToSave = id
-      ? {
-          ...formattedValues,
-          id,
-        }
-      : formattedValues;
-    return upsertAvailableProduct(productToSave, {
+    // const formattedValues = AvailableProductSchema.cast(values);
+    // const productToSave = id
+    //   ? {
+    //       ...formattedValues,
+    //       id,
+    //     }
+    //   : formattedValues;
+    // return upsertAvailableProduct(productToSave, {
+    return upsertAvailableProduct(values, {
       onSuccess: () => {
         invalidateAvailableProducts();
         removeProductCache(id);
